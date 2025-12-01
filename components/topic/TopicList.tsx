@@ -3,6 +3,13 @@
 import { TopicCard } from '@/components/topic/TopicCard'
 import { SearchBar } from '@/components/search/SearchBar'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { useState, useMemo } from 'react'
 
 interface Topic {
@@ -26,6 +33,7 @@ interface TopicListProps {
 
 export function TopicList({ topics, userVotes }: TopicListProps) {
   const [searchQuery, setSearchQuery] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('all')
 
   // 検索フィルタリング
   const filteredTopics = useMemo(() => {
@@ -49,6 +57,14 @@ export function TopicList({ topics, userVotes }: TopicListProps) {
     setSearchQuery(query)
   }
 
+  const categoryLabels: Record<string, string> = {
+    all: 'すべて',
+    bug_report: 'Bug Report',
+    feature_request: 'Feature Request',
+    feedback: 'Feedback',
+    discussion: 'Discussion',
+  }
+
   return (
     <div className="space-y-6">
       {/* 検索バー */}
@@ -64,7 +80,56 @@ export function TopicList({ topics, userVotes }: TopicListProps) {
         </div>
       )}
 
-      <Tabs defaultValue="all" className="w-full">
+      {/* スマホ用: ドロップダウン */}
+      <div className="md:hidden">
+        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+          <SelectTrigger className="w-full">
+            <SelectValue>
+              {categoryLabels[selectedCategory]} (
+              {filterByCategory(selectedCategory).length})
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">
+              すべて ({filterByCategory('all').length})
+            </SelectItem>
+            <SelectItem value="bug_report">
+              Bug Report ({filterByCategory('bug_report').length})
+            </SelectItem>
+            <SelectItem value="feature_request">
+              Feature Request ({filterByCategory('feature_request').length})
+            </SelectItem>
+            <SelectItem value="feedback">
+              Feedback ({filterByCategory('feedback').length})
+            </SelectItem>
+            <SelectItem value="discussion">
+              Discussion ({filterByCategory('discussion').length})
+            </SelectItem>
+          </SelectContent>
+        </Select>
+
+        {/* スマホ用コンテンツ */}
+        <div className="space-y-4 mt-6">
+          {filterByCategory(selectedCategory).length > 0 ? (
+            filterByCategory(selectedCategory).map((topic) => (
+              <TopicCard
+                key={topic.id}
+                topic={topic}
+                hasVoted={userVotes.includes(topic.id)}
+              />
+            ))
+          ) : (
+            <div className="text-center py-12 text-muted-foreground">
+              {searchQuery
+                ? '検索結果が見つかりませんでした'
+                : `${categoryLabels[selectedCategory]}がありません`}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* PC用: タブ */}
+      <Tabs defaultValue="all" className="w-full hidden md:block">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="all">
             すべて ({filterByCategory('all').length})
