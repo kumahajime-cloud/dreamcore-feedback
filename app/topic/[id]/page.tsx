@@ -62,7 +62,8 @@ export default async function TopicDetailPage({
       {/* トピック詳細 */}
       <Card>
         <CardHeader>
-          <div className="flex items-start justify-between gap-4">
+          {/* PC版: 横並びレイアウト */}
+          <div className="hidden md:flex items-start justify-between gap-4">
             <div className="flex-1">
               <h1 className="text-3xl font-bold mb-4">{topic.title}</h1>
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
@@ -90,9 +91,50 @@ export default async function TopicDetailPage({
               />
             </div>
           </div>
+
+          {/* スマホ版: 縦並びレイアウト（読みやすい順序） */}
+          <div className="md:hidden space-y-4">
+            {/* 1. タイトル */}
+            <h1 className="text-2xl font-bold">{topic.title}</h1>
+
+            {/* 2. カテゴリー・投票ボタン */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <CategoryBadge category={topic.category} />
+              <VoteButton
+                topicId={topic.id}
+                initialVoteCount={topic.vote_count}
+                initialHasVoted={hasVoted}
+              />
+            </div>
+
+            {/* 3. 投稿者名・日時 */}
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span>
+                {topic.profiles?.display_name ||
+                  topic.profiles?.email ||
+                  '匿名'}
+              </span>
+              <span>•</span>
+              <span>
+                {formatDistanceToNow(new Date(topic.created_at), {
+                  addSuffix: true,
+                  locale: ja,
+                })}
+              </span>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
+          {/* 4. 本文 */}
           <p className="whitespace-pre-wrap text-lg">{topic.content}</p>
+
+          {/* 5. ステータス（スマホのみ本文の下に表示） */}
+          <div className="md:hidden mt-6 pt-6 border-t">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">ステータス:</span>
+              <StatusBadge status={topic.status} />
+            </div>
+          </div>
 
           {/* 運営のみステータス管理を表示 */}
           {user && user.email === ADMIN_EMAIL && (
