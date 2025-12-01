@@ -37,35 +37,78 @@ export function Header() {
 
   return (
     <header className="border-b">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link href="/" className="text-2xl font-bold">
-          DreamCore Feedback
-        </Link>
+      <div className="container mx-auto px-4 py-4">
+        {/* PC版: 横並び */}
+        <div className="hidden md:flex items-center justify-between">
+          <Link href="/" className="text-2xl font-bold">
+            DreamCore Feedback
+          </Link>
 
-        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4">
+            {!loading && (
+              <>
+                {user ? (
+                  <>
+                    <span className="text-sm text-muted-foreground">
+                      {user.email}
+                    </span>
+                    <Button variant="outline" onClick={handleSignOut}>
+                      ログアウト
+                    </Button>
+                    <Button asChild>
+                      <Link href="/new">新規投稿</Link>
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="outline" asChild>
+                      <Link href="/auth/signin">ログイン</Link>
+                    </Button>
+                    <Button asChild>
+                      <Link href="/new">新規投稿</Link>
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* スマホ版: 縦並び */}
+        <div className="md:hidden space-y-3">
+          <Link href="/" className="text-xl font-bold block">
+            DreamCore Feedback
+          </Link>
+
           {!loading && (
             <>
               {user ? (
-                <>
-                  <span className="text-sm text-muted-foreground">
+                <div className="space-y-2">
+                  <div className="text-xs text-muted-foreground truncate">
                     {user.email}
-                  </span>
-                  <Button variant="outline" onClick={handleSignOut}>
-                    ログアウト
-                  </Button>
-                  <Button asChild>
-                    <Link href="/new">新規投稿</Link>
-                  </Button>
-                </>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={handleSignOut}
+                      className="flex-1"
+                    >
+                      ログアウト
+                    </Button>
+                    <Button asChild className="flex-1">
+                      <Link href="/new">新規投稿</Link>
+                    </Button>
+                  </div>
+                </div>
               ) : (
-                <>
-                  <Button variant="outline" asChild>
+                <div className="flex gap-2">
+                  <Button variant="outline" asChild className="flex-1">
                     <Link href="/auth/signin">ログイン</Link>
                   </Button>
-                  <Button asChild>
+                  <Button asChild className="flex-1">
                     <Link href="/new">新規投稿</Link>
                   </Button>
-                </>
+                </div>
               )}
             </>
           )}
