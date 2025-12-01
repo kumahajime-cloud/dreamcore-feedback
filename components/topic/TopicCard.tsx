@@ -31,6 +31,7 @@ export function TopicCard({ topic, hasVoted = false }: TopicCardProps) {
           <div className="flex-1 min-w-0">
             <Link
               href={`/topic/${topic.id}`}
+              prefetch={true}
               className="text-lg font-semibold hover:underline block truncate"
             >
               {topic.title}
@@ -60,7 +61,7 @@ export function TopicCard({ topic, hasVoted = false }: TopicCardProps) {
         </div>
 
         {/* スマホ版: カード全体がクリック可能 */}
-        <Link href={`/topic/${topic.id}`} className="md:hidden block space-y-3">
+        <Link href={`/topic/${topic.id}`} prefetch={true} className="md:hidden block space-y-3">
           <div className="text-lg font-semibold">
             {topic.title}
           </div>
