@@ -12,7 +12,7 @@ import { ja } from 'date-fns/locale'
 import { notFound } from 'next/navigation'
 
 // 運営メールアドレス（環境変数で管理することを推奨）
-const ADMIN_EMAIL = 'rimbaud18911110@gmail.com'
+const ADMIN_EMAILS = ['rimbaud18911110@gmail.com', 'riku2004@gmail.com']
 
 export default async function TopicDetailPage({
   params,
@@ -137,7 +137,7 @@ export default async function TopicDetailPage({
           </div>
 
           {/* 運営のみステータス管理を表示 */}
-          {user && user.email === ADMIN_EMAIL && (
+          {user && user.email && ADMIN_EMAILS.includes(user.email) && (
             <div className="mt-6 pt-6 border-t">
               <StatusManager topicId={topic.id} currentStatus={topic.status} />
             </div>
