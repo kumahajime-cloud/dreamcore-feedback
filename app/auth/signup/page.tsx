@@ -15,6 +15,7 @@ export default function SignUpPage() {
   const [password, setPassword] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [loading, setLoading] = useState(false)
+  const [signUpComplete, setSignUpComplete] = useState(false)
   const supabase = createClient()
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -34,9 +35,8 @@ export default function SignUpPage() {
 
       if (error) throw error
 
+      setSignUpComplete(true)
       toast.success('アカウントを作成しました！')
-      router.push('/')
-      router.refresh()
     } catch (error: any) {
       console.error('登録エラー:', error)
       toast.error(error.message || '登録に失敗しました')
@@ -45,6 +45,52 @@ export default function SignUpPage() {
     }
   }
 
+  // 登録完了画面
+  if (signUpComplete) {
+    return (
+      <div className="max-w-md mx-auto">
+        <Card>
+          <CardHeader>
+            <CardTitle>メールを確認してください</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <p className="text-green-800 font-medium mb-2">
+                ✓ 登録が完了しました！
+              </p>
+              <p className="text-green-700 text-sm">
+                <strong>{email}</strong> 宛に確認メールを送信しました。
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">
+                メールに記載されているリンクをクリックして、メールアドレスを確認してください。
+              </p>
+              <p className="text-sm text-muted-foreground">
+                確認後、ログインできるようになります。
+              </p>
+            </div>
+
+            <div className="pt-4 space-y-3">
+              <Button asChild className="w-full">
+                <Link href="/auth/signin">ログイン画面へ</Link>
+              </Button>
+              <Button variant="outline" asChild className="w-full">
+                <Link href="/">ホームに戻る</Link>
+              </Button>
+            </div>
+
+            <p className="text-xs text-muted-foreground text-center pt-2">
+              メールが届かない場合は、迷惑メールフォルダもご確認ください。
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  // 登録フォーム
   return (
     <div className="max-w-md mx-auto">
       <Card>
