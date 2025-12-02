@@ -7,11 +7,14 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { User } from '@supabase/supabase-js'
 
+const ADMIN_EMAILS = ['rimbaud18911110@gmail.com', 'riku2004@gmail.com']
+
 export function Header() {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
+  const isAdmin = user?.email && ADMIN_EMAILS.includes(user.email)
 
   useEffect(() => {
     // 現在のユーザーを取得
@@ -49,6 +52,11 @@ export function Header() {
               <>
                 {user ? (
                   <>
+                    {isAdmin && (
+                      <Button variant="outline" asChild>
+                        <Link href="/admin">管理画面</Link>
+                      </Button>
+                    )}
                     <span className="text-sm text-muted-foreground">
                       {user.email}
                     </span>
@@ -87,6 +95,11 @@ export function Header() {
                   <div className="text-xs text-muted-foreground truncate">
                     {user.email}
                   </div>
+                  {isAdmin && (
+                    <Button variant="outline" asChild className="w-full">
+                      <Link href="/admin">管理画面</Link>
+                    </Button>
+                  )}
                   <div className="flex gap-2">
                     <Button
                       variant="outline"

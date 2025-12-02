@@ -6,6 +6,7 @@ import { VoteButton } from '@/components/topic/VoteButton'
 import { ReplyList } from '@/components/reply/ReplyList'
 import { ReplyForm } from '@/components/reply/ReplyForm'
 import { TopicActions } from '@/components/topic/TopicActions'
+import { AdminActions } from '@/components/topic/AdminActions'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { formatDistanceToNow } from 'date-fns'
 import { ja } from 'date-fns/locale'
@@ -149,6 +150,16 @@ export default async function TopicDetailPage({
               <TopicActions topicId={topic.id} />
             </div>
           )}
+
+          {/* 管理者のみ削除ボタンを表示（投稿者本人ではない場合） */}
+          {user &&
+            user.email &&
+            ADMIN_EMAILS.includes(user.email) &&
+            user.id !== topic.user_id && (
+              <div className="mt-6 pt-6 border-t">
+                <AdminActions topicId={topic.id} />
+              </div>
+            )}
         </CardContent>
       </Card>
 
